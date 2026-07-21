@@ -14,6 +14,7 @@ class Settings(BaseSettings):
     minio_root_user: str = "minioadmin"
     minio_root_password: str = "minioadmin123"
     minio_endpoint: str = "localhost:9000"
+    raw_bucket_name: str = "raw-data"
 
     @property
     def database_url(self) -> str:

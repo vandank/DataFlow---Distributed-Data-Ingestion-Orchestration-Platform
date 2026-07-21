@@ -9,3 +9,5 @@ pytest
 httpx
 ruff
 black
+minio
+python-multipart
