@@ -10,6 +10,11 @@ from app.crud.ingestion_run import (
 )
 from app.models.ingestion_source import IngestionSource
 from app.services.storage.minio_service import MinIOStorageService
+from app.services.processing.csv_cleaner import clean_csv_dataframe
+from app.services.processing.csv_loader import load_transformed_rows
+from app.services.processing.csv_parser import parse_csv_bytes
+from app.services.processing.csv_transformer import transform_csv_dataframe
+from app.services.processing.csv_validator import validate_csv_dataframe
 
 
 def process_csv_ingestion(
@@ -34,6 +39,18 @@ def process_csv_ingestion(
             data=file_bytes,
             content_type=content_type or "text/csv",
         )
+
+        parsed_df = parse_csv_bytes(file_bytes)
+        validate_csv_dataframe(parsed_df)
+        cleaned_df = clean_csv_dataframe(parsed_df)
+        transformed_df = transform_csv_dataframe(cleaned_df)
+        load_transformed_rows(
+            db=db,
+            run_id=run.id,
+            source_id=source.id,
+            df=transformed_df,
+        )
+        
         run = mark_ingestion_run_success(db, run, raw_object_path)
         return run, raw_object_path
     except Exception as exc:

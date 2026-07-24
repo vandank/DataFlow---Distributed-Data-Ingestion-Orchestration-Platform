@@ -11,3 +11,4 @@ ruff
 black
 minio
 python-multipart
+pandas
