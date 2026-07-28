@@ -15,6 +15,7 @@ from app.services.processing.csv_loader import load_transformed_rows
 from app.services.processing.csv_parser import parse_csv_bytes
 from app.services.processing.csv_transformer import transform_csv_dataframe
 from app.services.processing.csv_validator import validate_csv_dataframe
+from app.warehouse.loader import load_warehouse_dataframe
 
 
 def process_csv_ingestion(
@@ -48,6 +49,13 @@ def process_csv_ingestion(
             db=db,
             run_id=run.id,
             source_id=source.id,
+            df=transformed_df,
+        )
+
+        load_warehouse_dataframe(
+            db=db,
+            source=source,
+            run_id=run.id,
             df=transformed_df,
         )
         
