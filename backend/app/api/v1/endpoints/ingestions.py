@@ -4,7 +4,8 @@ from sqlalchemy.orm import Session
 from app.crud.source import get_source_by_id
 from app.deps import get_db
 from app.schemas.ingestion import CSVIngestionResponse, IngestionRunRead
-from app.services.ingestion.csv_ingestion import process_csv_ingestion
+from app.pipelines.engine import PipelineNotFoundError, run_pipeline
+#from app.services.ingestion.csv_ingestion import process_csv_ingestion
 
 router = APIRouter()
 
@@ -19,18 +20,20 @@ async def ingest_csv_endpoint(
     if not source:
         raise HTTPException(status_code=404, detail="Source not found")
 
-    file_bytes = await file.read()
-    run, object_path = process_csv_ingestion(
-        db=db,
-        source=source,
-        file_name=file.filename or "upload.csv",
-        content_type=file.content_type,
-        file_bytes=file_bytes,
-    )
+    try:
+        result = run_pipeline(
+            db=db,
+            source=source,
+            file_name=file.filename or "upload.csv",
+            content_type=file.content_type,
+            file_bytes=await file.read(),
+        )
+    except PipelineNotFoundError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
 
     return CSVIngestionResponse(
-        run=IngestionRunRead.model_validate(run),
+        run=IngestionRunRead.model_validate(result.run),
         bucket="raw-data",
-        object_path=object_path,
-        message="CSV ingested successfully",
+        object_path=result.raw_object_path,
+        message=f"CSV ingested successfully. Transformed rows: {result.transformed_row_count}, Warehouse rows: {result.warehouse_row_count}",
     )

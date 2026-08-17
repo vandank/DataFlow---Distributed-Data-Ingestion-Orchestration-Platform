@@ -35,3 +35,27 @@ class MinIOStorageService:
             content_type=content_type,
         )
         return object_name
+    
+    def download_bytes(self, object_name: str) -> bytes:
+        self.ensure_bucket_exists()
+
+        response = self.client.get_object(
+            bucket_name=self.bucket_name,
+            object_name=object_name,
+        )
+
+        try:
+            return response.read()
+        finally:
+            response.close()
+            response.release_conn()
+
+    def object_exists(self, object_name: str) -> bool:
+        try:
+            self.client.stat_object(
+                bucket_name=self.bucket_name,
+                object_name=object_name,
+            )
+            return True
+        except Exception:
+            return False
