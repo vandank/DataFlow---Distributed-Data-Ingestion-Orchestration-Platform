@@ -16,6 +16,11 @@ class Settings(BaseSettings):
     minio_endpoint: str = "localhost:9000"
     raw_bucket_name: str = "raw-data"
 
+    airflow_api_url: str = "http://localhost:8080"
+    airflow_api_username: str = "airflow"
+    airflow_api_password: str = "airflow"
+    airflow_dag_id: str = "aidp_csv_ingestion"
+
     @property
     def database_url(self) -> str:
         return(

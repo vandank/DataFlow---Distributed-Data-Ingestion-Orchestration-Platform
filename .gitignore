@@ -16,6 +16,12 @@ htmlcov/
 docker-data/
 *.log
 
+#Ariflow
+airflow/logs/
+airflow/config/
+
 # OS
 .DS_Store
 Thumbs.db
+
+test_sales_ingestion.csv

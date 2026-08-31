@@ -35,7 +35,7 @@ class MinIOStorageService:
             content_type=content_type,
         )
         return object_name
-    
+
     def download_bytes(self, object_name: str) -> bytes:
         self.ensure_bucket_exists()
 

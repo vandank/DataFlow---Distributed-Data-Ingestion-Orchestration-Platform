@@ -13,7 +13,6 @@ from app.models.ingestion_run import IngestionRun
 from app.pipelines.base import PipelineArtifact, PipelineContext, PipelineResult
 #from app.crud.transformed_row import create_transformed_rows #Commenting this out
 from app.services.processing.csv_loader import load_transformed_rows
-from app.pipelines.base import PipelineContext, PipelineResult
 from app.services.processing.csv_cleaner import clean_csv_dataframe
 from app.services.processing.csv_parser import parse_csv_bytes
 from app.services.processing.csv_transformer import transform_csv_dataframe
@@ -241,7 +240,7 @@ class CSVPipeline:
             # ------------------------------
             # 6. Persist transformed/staging rows
             # ------------------------------
-            
+
             #transformed_rows = create_transformed_rows(
             #    db=db,
             #    run_id=run.id,
@@ -249,7 +248,7 @@ class CSVPipeline:
             #    records=transformed_df.to_dict(orient="records"),
             #)
             #context.transformed_row_count = len(transformed_rows)
-            
+
             context.transformed_row_count = load_transformed_rows(
             db=db,
             run_id=run.id,
@@ -320,4 +319,4 @@ class CSVPipeline:
                     run_id=context.run.id,
                     error_message=str(exc),
                 )
-            raise 
+            raise

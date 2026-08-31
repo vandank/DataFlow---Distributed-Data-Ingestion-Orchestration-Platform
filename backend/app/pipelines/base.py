@@ -26,7 +26,6 @@ class PipelineContext:
     file_bytes: bytes
     run: IngestionRun | None = None
     raw_object_path: str | None = None
-    raw_object_path: str | None = None
     parsed_object_path: str | None = None
     cleaned_object_path: str | None = None
     transformed_object_path: str | None = None
