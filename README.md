@@ -95,7 +95,7 @@ The platform also tracks each ingestion using a persistent run ID so that an upl
 
 A CSV ingestion follows this sequence:
 ### 1. Upload
-A A client sends a CSV file and `source_id` to:
+A client sends a CSV file and `source_id` to:
 
 ```text
 POST /api/v1/ingestions/csv
@@ -289,6 +289,8 @@ localhost:8080
 ```
 
 This distinction is important because `localhost` inside a container refers to that container itself, not the host machine.
+
+---
 
 ## Technology Stack
 
