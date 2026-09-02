@@ -14,20 +14,11 @@ The project is designed around a simple principle:
 
 ## Why I Built This
 
-Many data engineering projects demonstrate individual technologies in isolation — an API, a database, object storage, or an Airflow DAG.
+I built DataFlow to understand what happens when a simple file-upload API grows into a real data ingestion workflow. I wanted to go beyond writing an endpoint that accepts a CSV and figure out where the API's responsibility should end, where a workflow orchestrator should take over, and how the two can work together reliably.
 
-This project focuses on what happens when those components have to work together as one system.
+The problem I wanted to solve was making an ingestion process that could be tracked from the moment a file arrives to the moment its data reaches the warehouse. This meant dealing with immutable raw data, asynchronous processing, failures in the middle of a pipeline, and keeping a clear connection between an application-level ingestion run and its corresponding Airflow execution.
 
-The goal is to build a small but realistic data platform with clear ownership between services:
-
-- FastAPI handles ingestion requests.
-- MinIO provides durable object storage for raw files.
-- PostgreSQL stores application metadata and warehouse data.
-- Apache Airflow orchestrates asynchronous processing.
-- Python/Pandas perform CSV parsing and transformation.
-- Docker Compose provides the local distributed environment.
-
-The platform also tracks each ingestion using a persistent run ID so that an uploaded file can be followed from its initial registration through processing and warehouse loading.
+That led to the core design decision behind DataFlow: **FastAPI handles the ingestion request and creates the ingestion record; Airflow takes over the long-running processing workflow.** PostgreSQL tracks application state, MinIO preserves the raw data, and Airflow coordinates processing and warehouse loading. I wanted to prove that these pieces could work together as one reliable end-to-end system, rather than simply building each component in isolation.
 
 ---
 
